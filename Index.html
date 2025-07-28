@@ -5,301 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <meta name="theme-color" content="#1e293b">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes"> <!-- Fixes deprecated warning -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Professional Crypto Dashboard</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="icon" href="icon-192.png">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e293b, #7c3aed, #1e293b);
-            color: white;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .title {
-            font-size: 36px;
-            font-weight: bold;
-            background: linear-gradient(45deg, #10b981, #8b5cf6, #f59e0b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            color: #d1d5db;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-        
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(15, 23, 42, 0.7);
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 2px solid #10b981;
-            margin-bottom: 20px;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #10b981;
-            animation: pulse 2s infinite;
-        }
-        
-        .profit-urgent {
-            animation: pulse-red 2s infinite;
-        }
-        
-        @keyframes pulse-red {
-            0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
-        }
-        
-        .rotation-top {
-            animation: pulse-green 3s infinite;
-        }
-        
-        @keyframes pulse-green {
-            0%, 100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
-        }
-        
-        .refresh-btn {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            margin-bottom: 25px;
-            transition: background-color 0.2s;
-        }
-        
-        .refresh-btn:hover:not(:disabled) {
-            background: #2563eb;
-        }
-        
-        .refresh-btn:disabled {
-            background: #6b7280;
-            cursor: not-allowed;
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-        }
-        
-        .card {
-            background: rgba(15, 23, 42, 0.95);
-            border-radius: 16px;
-            padding: 20px;
-            position: relative;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s ease;
-            border: 3px solid;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .recommendation-badge {
-            position: absolute;
-            top: -10px;
-            right: 15px;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 11px;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        
-        .coin-info {
-            margin-top: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .coin-name {
-            font-size: 18px;
-            color: #f8fafc;
-            margin-bottom: 8px;
-        }
-        
-        .price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #10b981;
-            margin-bottom: 5px;
-        }
-        
-        .change {
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .technical-box {
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid rgba(139, 92, 246, 0.4);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 15px;
-        }
-        
-        .signals-box {
-            margin-bottom: 20px;
-        }
-        
-        .signals-title {
-            font-size: 13px;
-            color: #fbbf24;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .signal {
-            font-size: 11px;
-            padding: 4px 8px;
-            margin: 2px 0;
-            background: rgba(71, 85, 105, 0.4);
-            border-radius: 6px;
-            border-left: 3px solid;
-        }
-        
-        .target {
-            margin-bottom: 10px;
-        }
-        
-        .target-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-        
-        .progress-bar {
-            background: #374151;
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            transition: width 0.5s ease;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #9ca3af;
-            font-size: 13px;
-            padding: 20px 0;
-        }
-        
-        .rotation-box {
-            background: rgba(16, 185, 129, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .rotation-box h3 {
-            margin-bottom: 10px;
-        }
-
-        .rotation-box ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-
-        .rotation-box li {
-            margin-bottom: 5px;
-        }
-
-        .chart-container {
-            height: 150px;
-            margin-bottom: 15px;
-            overflow: hidden; /* Prevent overflow */
-        }
-
-        canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        .summary {
-            background: rgba(16, 185, 129, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 15px;
-            }
-            .grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            .title {
-                font-size: 28px;
-            }
-            .subtitle {
-                font-size: 14px;
-            }
-            .card {
-                padding: 15px;
-            }
-            .coin-name {
-                font-size: 16px;
-            }
-            .price {
-                font-size: 20px;
-            }
-            .chart-container {
-                height: 120px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .refresh-btn {
-                width: 100%;
-            }
-            .status {
-                flex-direction: column;
-                gap: 5px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #1e293b, #7c3aed, #1e293b); color: white; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { font-size: 36px; font-weight: bold; background: linear-gradient(45deg, #10b981, #8b5cf6, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .subtitle { color: #d1d5db; font-size: 16px; margin-bottom: 20px; }
+        .status { display: inline-flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.7); padding: 8px 16px; border-radius: 20px; border: 2px solid #10b981; margin-bottom: 20px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite; }
+        .profit-urgent { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); } 50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); } }
+        .rotation-top { animation: pulse-green 3s infinite; }
+        @keyframes pulse-green { 0%, 100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); } 50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); } }
+        .refresh-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; margin-bottom: 25px; transition: background-color 0.2s; }
+        .refresh-btn:hover:not(:disabled) { background: #2563eb; }
+        .refresh-btn:disabled { background: #6b7280; cursor: not-allowed; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .card { background: rgba(15, 23, 42, 0.95); border-radius: 16px; padding: 20px; position: relative; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); transition: transform 0.2s ease; border: 3px solid; }
+        .card:hover { transform: translateY(-5px); }
+        .recommendation-badge { position: absolute; top: -10px; right: 15px; color: white; padding: 6px 12px; border-radius: 15px; font-size: 11px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .coin-info { margin-top: 15px; margin-bottom: 20px; }
+        .coin-name { font-size: 18px; color: #f8fafc; margin-bottom: 8px; }
+        .price { font-size: 24px; font-weight: bold; color: #10b981; margin-bottom: 5px; }
+        .change { font-size: 14px; font-weight: bold; }
+        .technical-box { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+        .signals-box { margin-bottom: 20px; }
+        .signals-title { font-size: 13px; color: #fbbf24; font-weight: bold; margin-bottom: 10px; }
+        .signal { font-size: 11px; padding: 4px 8px; margin: 2px 0; background: rgba(71, 85, 105, 0.4); border-radius: 6px; border-left: 3px solid; }
+        .target { margin-bottom: 10px; }
+        .target-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+        .progress-bar { background: #374151; height: 6px; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 0.5s ease; }
+        .footer { text-align: center; margin-top: 30px; color: #9ca3af; font-size: 13px; padding: 20px 0; }
+        .rotation-box { background: rgba(16, 185, 129, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .rotation-box h3 { margin-bottom: 10px; }
+        .rotation-box ul { list-style-type: disc; padding-left: 20px; }
+        .rotation-box li { margin-bottom: 5px; }
+        .chart-container { height: 150px; margin-bottom: 15px; overflow: hidden; }
+        canvas { width: 100%; height: 100%; }
+        .summary { background: rgba(16, 185, 129, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
+        @media (max-width: 768px) { body { padding: 15px; } .grid { grid-template-columns: 1fr; gap: 15px; } .title { font-size: 28px; } .subtitle { font-size: 14px; } .card { padding: 15px; } .coin-name { font-size: 16px; } .price { font-size: 20px; } .chart-container { height: 120px; } }
+        @media (max-width: 480px) { .refresh-btn { width: 100%; } .status { flex-direction: column; gap: 5px; } }
     </style>
 </head>
 <body>
@@ -329,7 +82,6 @@
     </div>
 
     <script>
-        // Global variables
         let cryptoData = [];
         let currentPrices = {};
         let priceChanges = {};
@@ -337,7 +89,6 @@
         let lastFetchTime = null;
         let isLoading = false;
 
-        // Updated crypto configuration (new TPs for SUI based on $3.71 current)
         const cryptoConfig = [
             { symbol: 'ETH', name: 'Ethereum', basePrice: 3500, tp1: 5250, tp2: 10500, tp3: 15750, coingeckoId: 'ethereum', risk: 'LOW', historicalLow: 880, historicalATH: 4878, rotate: true },
             { symbol: 'XRP', name: 'XRP', basePrice: 2.80, tp1: 4.20, tp2: 8.40, tp3: 12.60, coingeckoId: 'ripple', risk: 'MEDIUM', historicalLow: 0.15, historicalATH: 3.40, rotate: true },
@@ -350,38 +101,25 @@
             { symbol: 'TSLA', name: 'Tesla', basePrice: 250, tp1: 375, tp2: 750, tp3: 1125, coingeckoId: 'tesla-inc', risk: 'MEDIUM', historicalLow: 23.74, historicalATH: 409.97, rotate: false }
         ];
 
-        // Initialize with current prices
         function initializePrices() {
             cryptoConfig.forEach(crypto => {
                 currentPrices[crypto.symbol] = crypto.basePrice;
-                priceChanges[crypto.symbol] = (Math.random() - 0.3) * 10; // Realistic 24h changes
+                priceChanges[crypto.symbol] = (Math.random() - 0.3) * 10;
             });
         }
 
-        // Fetch live prices with CORS proxy fallback
         async function fetchLivePrices() {
-            const corsProxies = [
-                'https://corsproxy.io/?',
-                'https://api.allorigins.win/raw?url=',
-                ''  // Direct attempt first
-            ];
-            
+            const corsProxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', ''];
             for (const proxy of corsProxies) {
                 try {
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Delay to avoid 429
                     const ids = cryptoConfig.map(c => c.coingeckoId).join(',');
                     const baseUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
                     const url = proxy + encodeURIComponent(baseUrl);
-                    
-                    const response = await fetch(proxy ? url : baseUrl, {
-                        method: 'GET',
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    
+                    const response = await fetch(proxy ? url : baseUrl, { method: 'GET', headers: { 'Accept': 'application/json' } });
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    
                     const data = await response.json();
                     let updated = false;
-                    
                     cryptoConfig.forEach(crypto => {
                         const coinData = data[crypto.coingeckoId];
                         if (coinData && coinData.usd) {
@@ -390,24 +128,19 @@
                             updated = true;
                         }
                     });
-                    
                     if (updated) {
                         apiStatus = 'live-data';
                         lastFetchTime = new Date();
                         console.log('✅ Successfully fetched LIVE PRICES!', currentPrices);
                         return true;
                     }
-                    
                 } catch (error) {
                     console.log(`❌ ${proxy ? 'Proxy' : 'Direct'} failed:`, error.message);
-                    continue; // Try next proxy
+                    continue;
                 }
             }
-            
-            // All proxies failed - use enhanced demo mode
             console.log('🔄 All connections failed, using enhanced demo mode');
             apiStatus = 'demo-mode';
-            
             const priceVariations = {
                 'ETH': { min: 3400, max: 3600, volatility: 0.03 },
                 'XRP': { min: 2.6, max: 3.0, volatility: 0.04 },
@@ -419,38 +152,39 @@
                 'COIN': { min: 195, max: 205, volatility: 0.03 },
                 'TSLA': { min: 245, max: 255, volatility: 0.03 }
             };
-            
             cryptoConfig.forEach(crypto => {
                 const variation = priceVariations[crypto.symbol];
                 const randomPrice = variation.min + (Math.random() * (variation.max - variation.min));
                 currentPrices[crypto.symbol] = randomPrice;
                 priceChanges[crypto.symbol] = (Math.random() - 0.35) * 13;
             });
-            
             lastFetchTime = new Date();
             return false;
         }
 
-        // Fetch historical data for charts
         async function fetchHistoricalPrices(coingeckoId) {
             try {
-                const baseUrl = `https://api.coingecko.com/api/v3/coins/${coingeckoId}/market_chart?vs_currency=usd&days=30`;
-                const response = await fetch(baseUrl);
-                if (!response.ok) throw new Error('Failed to fetch historical data');
-                const data = await response.json();
-                return data.prices.map(p => ({ time: p[0], price: p[1] }));
+                const corsProxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
+                for (const proxy of corsProxies) {
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Delay to avoid 429
+                    const baseUrl = `https://api.coingecko.com/api/v3/coins/${coingeckoId}/market_chart?vs_currency=usd&days=30`;
+                    const url = proxy + encodeURIComponent(baseUrl);
+                    const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    return data.prices.map(p => ({ time: p[0], price: p[1] }));
+                }
             } catch (error) {
                 console.log('Historical fetch failed for ' + coingeckoId + ', using demo data');
                 const crypto = cryptoConfig.find(c => c.coingeckoId === coingeckoId);
                 let price = crypto.basePrice;
-                return Array.from({length: 30}, (_, i) => {
-                    price += (Math.random() - 0.5) * crypto.basePrice * 0.1;
-                    return { time: Date.now() - i * 86400000, price: Math.max(crypto.basePrice * 0.5, price) };
-                });
+                return Array.from({ length: 30 }, (_, i) => ({
+                    time: Date.now() - i * 86400000,
+                    price: Math.max(crypto.basePrice * 0.5, price + (Math.random() - 0.5) * crypto.basePrice * 0.1)
+                }));
             }
         }
 
-        // Draw chart with Canvas
         async function drawChart(symbol, canvasId) {
             const crypto = cryptoConfig.find(c => c.symbol === symbol);
             const historical = await fetchHistoricalPrices(crypto.coingeckoId);
@@ -574,11 +308,9 @@
                 profitAction = 'MAJOR PROFIT TAKING';
             }
             
-            // Adjust urgency with RSI
             if (technicals.rsi > 70) profitUrgency += 15;
-            if (technicals.rsi > 80) profitUrgency -= 10; // Avoid overbought traps
+            if (technicals.rsi > 80) profitUrgency -= 10;
             
-            // Rotation score only for rotate:true
             let rotationScore = 0;
             if (crypto.rotate) {
                 if (upsideTP1 > 50) rotationScore += 30;
@@ -591,14 +323,13 @@
                 if (technicals.confidence > 70) rotationScore += 10;
             }
             
-            // Adjust expected return with volatility
             const volatility = Math.abs(priceChanges[crypto.symbol] || 0);
             let expectedReturn = (upsideTP1 * 0.6 + upsideTP2 * 0.3 + upsideTP3 * 0.1);
-            if (volatility > 10) expectedReturn *= 0.8; // Reduce for high volatility
+            if (volatility > 10) expectedReturn *= 0.8;
             
             return {
                 progressTP1,
-                progressTP2, 
+                progressTP2,
                 progressTP3,
                 upsideTP1: Math.round(upsideTP1),
                 upsideTP2: Math.round(upsideTP2),
@@ -614,29 +345,28 @@
         function generateSignals(technicals, profitMetrics, crypto) {
             const signals = [];
             
-            if (technicals.rsi < 30) {
-                signals.push({ text: '🟢 RSI Oversold - Potential Buy', color: '#10b981' });
-            } else if (technicals.rsi > 70) {
-                signals.push({ text: '🔴 RSI Overbought - Take Profits', color: '#ef4444' });
-            }
+            if (technicals.rsi < 30) signals.push({ text: '🟢 RSI Oversold - Potential Buy', color: '#10b981' });
+            else if (technicals.rsi > 70) signals.push({ text: '🔴 RSI Overbought - Take Profits', color: '#ef4444' });
             
-            if (technicals.trend === 'BULLISH') {
-                signals.push({ text: '🟢 Bullish Trend', color: '#10b981' });
-            } else if (technicals.trend === 'BEARISH') {
-                signals.push({ text: '🔴 Bearish Trend', color: '#ef4444' });
-            }
+            if (technicals.trend === 'BULLISH') signals.push({ text: '🟢 Bullish Trend', color: '#10b981' });
+            else if (technicals.trend === 'BEARISH') signals.push({ text: '🔴 Bearish Trend', color: '#ef4444' });
             
             signals.push({ text: `⭐ ${technicals.pattern} (${technicals.confidence}%)`, color: '#8b5cf6' });
             signals.push({ text: '📈 Wave Analysis Active', color: '#10b981' });
             signals.push({ text: '🎯 Target Levels Set', color: '#fbbf24' });
             
-            if (Math.abs(priceChanges[crypto.symbol] || 0) > 10) {
-                signals.push({ text: '⚠️ High Volatility - Adjust Risk', color: '#f97316' });
-            }
-            
+            if (Math.abs(priceChanges[crypto.symbol] || 0) > 10) signals.push({ text: '⚠️ High Volatility - Adjust Risk', color: '#f97316' });
             signals.push({ text: '🛡️ Set Stop-Loss at 10% Below', color: '#fbbf24' });
             
             return signals.slice(0, 6);
+        }
+
+        function getProfitRecommendation(profitMetrics, technicals) {
+            if (profitMetrics.profitUrgency >= 90) return 'URGENT: TAKE PROFITS';
+            if (profitMetrics.profitUrgency >= 80) return 'ACTION: SCALE OUT';
+            if (technicals.recommendation === 'STRONG BUY' && profitMetrics.upsideTP1 > 50) return 'BUY STRONG';
+            if (technicals.trend === 'BULLISH' && profitMetrics.rotationScore > 70) return 'ROTATE IN';
+            return 'HOLD POSITION';
         }
 
         function updateStatus(isLive) {
@@ -677,7 +407,7 @@
                 const technicals = getRandomTechnicals();
                 const currentPrice = currentPrices[crypto.symbol] || crypto.basePrice;
                 const profitMetrics = calculateProfitMetrics(crypto, currentPrice, technicals);
-                const recommendation = getProfitRecommendation(profitMetrics, technicals);
+                const recommendation = getProfitRecommendation(profitMetrics, technicals); // Corrected call
                 return { crypto, profitMetrics, recommendation };
             });
             
@@ -708,7 +438,7 @@
             
             grid.innerHTML = '';
             for (const data of cardData) {
-                const cardHtml = createCryptoCard(data.crypto, data.profitMetrics); // Pass profitMetrics
+                const cardHtml = createCryptoCard(data.crypto, data.profitMetrics);
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = cardHtml;
                 const cardElement = tempDiv.firstElementChild;
