@@ -323,9 +323,10 @@
                 if (upsideTP1 > 100) rotationScore += 25;
                 if (progressTP1 < 30) rotationScore += 25;
                 if (progressTP1 < 50) rotationScore += 15;
-                if (technicals.rsi < 35) rotationScore += 20;
+                if (technicals.rsi < 35) rotationScore += 20; // Enhanced RSI trigger
                 if (technicals.trend === 'BULLISH') rotationScore += 15;
                 if (technicals.confidence > 70) rotationScore += 10;
+                rotationScore = Math.min(100, rotationScore);
             }
             
             const volatility = Math.abs(priceChanges[crypto.symbol] || 0);
@@ -341,7 +342,7 @@
                 upsideTP3: Math.round(upsideTP3),
                 profitUrgency: Math.min(100, profitUrgency),
                 profitAction,
-                rotationScore: crypto.rotate ? Math.min(100, rotationScore) : null,
+                rotationScore: crypto.rotate ? rotationScore : null,
                 expectedReturn: Math.round(expectedReturn),
                 riskLevel: crypto.risk
             };
@@ -350,8 +351,8 @@
         function generateSignals(technicals, profitMetrics, crypto) {
             const signals = [];
             
-            if (technicals.rsi < 30) signals.push({ text: '🟢 RSI Oversold - Potential Buy', color: '#10b981' });
-            else if (technicals.rsi > 70) signals.push({ text: '🔴 RSI Overbought - Take Profits', color: '#ef4444' });
+            if (technicals.rsi < 30) signals.push({ text: '🟢 RSI Oversold (<30) - Rotate In', color: '#10b981' });
+            else if (technicals.rsi > 70) signals.push({ text: '🔴 RSI Overbought (>70) - Rotate Out', color: '#ef4444' });
             
             if (technicals.trend === 'BULLISH') signals.push({ text: '🟢 Bullish Trend', color: '#10b981' });
             else if (technicals.trend === 'BEARISH') signals.push({ text: '🔴 Bearish Trend', color: '#ef4444' });
