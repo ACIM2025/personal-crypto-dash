@@ -113,7 +113,7 @@
             const corsProxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', ''];
             for (const proxy of corsProxies) {
                 try {
-                    await new Promise(resolve => setTimeout(resolve, 5000)); // 5s delay for 429
+                    await new Promise(resolve => setTimeout(resolve, 10000)); // Increased to 10s for 429
                     const ids = cryptoConfig.map(c => c.coingeckoId).join(',');
                     const baseUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
                     const url = proxy + encodeURIComponent(baseUrl);
@@ -167,7 +167,8 @@
             try {
                 const corsProxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
                 for (const proxy of corsProxies) {
-                    await new Promise(resolve => setTimeout(resolve, 5000)); // 5s delay for 429
+                    await new Promise(resolve => setTimeout(resolve, 10000)); // Increased to 10s for 429
+                    if (coingeckoId === 'tesla-inc') return []; // Skip historical for Tesla
                     const baseUrl = `https://api.coingecko.com/api/v3/coins/${coingeckoId}/market_chart?vs_currency=usd&days=30`;
                     const url = proxy + encodeURIComponent(baseUrl);
                     const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
@@ -215,7 +216,7 @@
             ctx.strokeStyle = '#10b981';
             ctx.lineWidth = 2;
             historical.forEach((point, i) => {
-                const x = paddingX + (i / (historical.length - 1)) * (canvas.width - 2 * paddingX);
+                const x = paddingX + (i / (historical.length - 1) * (canvas.width - 2 * paddingX));
                 const y = canvas.height - ((point.price - minPrice) / chartRange) * canvas.height;
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
