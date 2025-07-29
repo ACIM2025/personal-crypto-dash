@@ -88,6 +88,7 @@
         let apiStatus = 'connecting';
         let lastFetchTime = null;
         let isLoading = false;
+        let previousMA50 = null; // To track trend
 
         const cryptoConfig = [
             { symbol: 'ETH', name: 'Ethereum', basePrice: 3500, tp1: 5250, tp2: 10500, tp3: 15750, coingeckoId: 'ethereum', risk: 'LOW', historicalLow: 880, historicalATH: 4878, rotate: true },
@@ -414,6 +415,21 @@
             
             updateStatus(liveDataSuccess);
             
+            // Calculate MA50 for trend
+            let ma50Sum = 0;
+            const historical = await fetchHistoricalPrices(cryptoConfig[0].coingeckoId); // Use first coin as proxy
+            const prices = historical.map(h => h.price);
+            const ma50Length = Math.min(50, prices.length);
+            for (let i = prices.length - ma50Length; i < prices.length; i++) {
+                ma50Sum += prices[i] || 0;
+            }
+            const currentMA50 = ma50Length > 0 ? ma50Sum / ma50Length : 0;
+            let MA50Trend = 'N/A';
+            if (previousMA50 !== null) {
+                MA50Trend = currentMA50 > previousMA50 ? '🟢 Bullish (MA50 Up)' : '🔴 Bearish (MA50 Down)';
+            }
+            previousMA50 = currentMA50;
+
             const cardData = cryptoConfig.map(crypto => {
                 const technicals = getRandomTechnicals();
                 const currentPrice = currentPrices[crypto.symbol] || crypto.basePrice;
@@ -476,14 +492,12 @@
         }
 
         function updateDemoPrices() {
-            if (apiStatus === 'demo-mode') {
-                cryptoConfig.forEach(crypto => {
-                    const currentPrice = currentPrices[crypto.symbol];
-                    const movement = (Math.random() - 0.5) * 0.01;
-                    currentPrices[crypto.symbol] = currentPrice * (1 + movement);
-                    priceChanges[crypto.symbol] += (Math.random() - 0.5) * 0.5;
-                });
-            }
+            cryptoConfig.forEach(crypto => {
+                const currentPrice = currentPrices[crypto.symbol];
+                const movement = (Math.random() - 0.5) * 0.01;
+                currentPrices[crypto.symbol] = currentPrice * (1 + movement);
+                priceChanges[crypto.symbol] += (Math.random() - 0.5) * 0.5;
+            });
         }
 
         if (Notification.permission === 'default') {
