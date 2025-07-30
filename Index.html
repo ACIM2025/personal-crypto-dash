@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <meta name="theme-color" content="#1e293b">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes"> <!-- Added for Android PWA -->
+    <meta name="mobile-web-app-capable" content="yes"> <!-- Ensured for Android PWA -->
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Professional Crypto Dashboard</title>
     <link rel="manifest" href="/manifest.json">
@@ -82,15 +82,14 @@
     </div>
 
     <script>
-        let cryptoData = [];
         let currentPrices = {};
         let priceChanges = {};
         let apiStatus = 'connecting';
         let lastFetchTime = null;
         let isLoading = false;
-        let previousMA50 = null; // To track trend
+        let previousMA50 = null;
 
-        const CMC_API_KEY = 'e171ab02-7974-45ea-bb78-d72205738efb'; // Your free API key
+        const CMC_API_KEY = 'e171ab02-7974-45ea-bb78-d72205738efb';
 
         const cryptoConfig = [
             { symbol: 'ETH', name: 'Ethereum', basePrice: 3500, tp1: 5250, tp2: 10500, tp3: 15750, cmcSymbol: 'ETH', risk: 'LOW', historicalLow: 880, historicalATH: 4878, rotate: true },
@@ -113,18 +112,13 @@
 
         async function fetchLivePrices() {
             const symbols = cryptoConfig.filter(c => c.cmcSymbol).map(c => c.cmcSymbol).join(',');
-            if (!symbols) {
-                return false; // No valid symbols
-            }
+            if (!symbols) return false;
             try {
-                await new Promise(resolve => setTimeout(resolve, 20000)); // 20s delay for reliability
+                await new Promise(resolve => setTimeout(resolve, 20000));
                 const baseUrl = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${symbols}`;
                 const response = await fetch(baseUrl, {
                     method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CMC_PRO_API_KEY': CMC_API_KEY
-                    }
+                    headers: { 'Accept': 'application/json', 'X-CMC_PRO_API_KEY': CMC_API_KEY }
                 });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
@@ -146,7 +140,7 @@
             } catch (error) {
                 console.log('❌ CMC failed:', error.message);
             }
-            console.log('🔄 All connections failed, using enhanced demo mode');
+            console.log('🔄 Using enhanced demo mode');
             apiStatus = 'demo-mode';
             const priceVariations = {
                 'ETH': { min: 3400, max: 3600, volatility: 0.03 },
@@ -170,18 +164,15 @@
         }
 
         async function fetchHistoricalPrices(cmcSymbol) {
-            if (!cmcSymbol) return []; // Skip for non-crypto
+            if (!cmcSymbol) return [];
             try {
-                await new Promise(resolve => setTimeout(resolve, 20000)); // 20s delay for reliability
+                await new Promise(resolve => setTimeout(resolve, 20000));
                 const timeEnd = Math.floor(Date.now() / 1000);
-                const timeStart = timeEnd - 30 * 24 * 3600; // 30 days
+                const timeStart = timeEnd - 30 * 24 * 3600;
                 const baseUrl = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/ohlcv/historical?symbol=${cmcSymbol}&time_start=${timeStart}&time_end=${timeEnd}`;
                 const response = await fetch(baseUrl, {
                     method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CMC_PRO_API_KEY': CMC_API_KEY
-                    }
+                    headers: { 'Accept': 'application/json', 'X-CMC_PRO_API_KEY': CMC_API_KEY }
                 });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
@@ -333,10 +324,10 @@
                 if (upsideTP1 > 100) rotationScore += 25;
                 if (progressTP1 < 30) rotationScore += 25;
                 if (progressTP1 < 50) rotationScore += 15;
-                if (technicals.rsi < 35) rotationScore += 20; // Enhanced RSI trigger
+                if (technicals.rsi < 35) rotationScore += 20;
                 if (technicals.trend === 'BULLISH') rotationScore += 15;
                 if (technicals.confidence > 70) rotationScore += 10;
-                const riskFactor = (currentPrice - crypto.historicalLow) / currentPrice || 1; // Risk adjustment
+                const riskFactor = (currentPrice - crypto.historicalLow) / currentPrice || 1;
                 rotationScore *= riskFactor;
                 rotationScore = Math.min(100, rotationScore);
             }
@@ -345,7 +336,7 @@
             let expectedReturn = (upsideTP1 * 0.6 + upsideTP2 * 0.3 + upsideTP3 * 0.1);
             if (volatility > 10) expectedReturn *= 0.8;
             
-            const trailingStopLoss = currentPrice * (1 - 2 * volatility / 100); // Dynamic stop-loss
+            const trailingStopLoss = currentPrice * (1 - 2 * volatility / 100);
             
             return {
                 progressTP1,
@@ -359,7 +350,7 @@
                 rotationScore: crypto.rotate ? rotationScore : null,
                 expectedReturn: Math.round(expectedReturn),
                 riskLevel: crypto.risk,
-                trailingStopLoss: trailingStopLoss
+                trailingStopLoss
             };
         }
 
@@ -400,7 +391,7 @@
                 statusIndicator.style.borderColor = '#10b981';
                 statusDot.style.background = '#10b981';
             } else {
-                statusText.textContent = '📊 Professional Demo Mode (Market-Based Prices)';
+                statusText.textContent = '📊 Professional Demo Mode';
                 statusIndicator.style.borderColor = '#8b5cf6';
                 statusDot.style.background = '#8b5cf6';
             }
@@ -418,15 +409,14 @@
             refreshBtn.disabled = true;
             refreshBtn.textContent = '🔄 Updating...';
             
-            updateStatus(false); // Update status early
+            updateStatus(false);
             
             const liveDataSuccess = await fetchLivePrices();
             
             if (!liveDataSuccess) updateDemoPrices();
             
-            // Calculate MA50 for trend
             let ma50Sum = 0;
-            const historical = await fetchHistoricalPrices(cryptoConfig[0].cmcSymbol); // Use first coin as proxy
+            const historical = await fetchHistoricalPrices(cryptoConfig[0].cmcSymbol);
             const prices = historical.map(h => h.price);
             const ma50Length = Math.min(50, prices.length);
             for (let i = prices.length - ma50Length; i < prices.length; i++) {
@@ -452,7 +442,7 @@
             const topLaggard = cardData.filter(d => d.crypto.rotate).sort((a, b) => b.profitMetrics.rotationScore - a.profitMetrics.rotationScore)[0]?.crypto.symbol || 'N/A';
             
             summarySection.innerHTML = `
-                <p>Avg Expected Return: ${totalReturn.toFixed(2)}% | Top Leader: ${topLeader} | Top Laggard (Crypto): ${topLaggard} | Trend: ${MA50Trend}</p>
+                <p>Avg Expected Return: ${totalReturn.toFixed(2)}% | Top Leader: ${topLeader} | Top Laggard: ${topLaggard} | Trend: ${MA50Trend}</p>
             `;
             
             let rotationSuggestions = '';
@@ -462,7 +452,7 @@
             if (urgentCoins.length > 0 && candidateCoins.length > 0) {
                 rotationSuggestions = '<div class="rotation-box">';
                 rotationSuggestions += '<h3>🔄 Rotation Recommendations</h3>';
-                rotationSuggestions += '<p>Rotate profits from overperforming cryptos to those with remaining upside. Ideal ratio: 20-30% per rotation.</p>';
+                rotationSuggestions += '<p>Rotate profits from overperforming cryptos to those with upside. Ideal ratio: 20-30%.</p>';
                 rotationSuggestions += '<ul>';
                 urgentCoins.forEach((urgent, index) => {
                     const candidate = candidateCoins[index % candidateCoins.length];
@@ -486,7 +476,7 @@
             }
             
             const updateTime = lastFetchTime || new Date();
-            const modeText = liveDataSuccess ? 'Live API Data' : 'Professional Demo Mode';
+            const modeText = liveDataSuccess ? 'Live API Data' : 'Demo Mode';
             lastUpdate.textContent = `Last Updated: ${updateTime.toLocaleTimeString()} | ${modeText}`;
             
             refreshBtn.disabled = false;
@@ -527,7 +517,7 @@
                         <div class="change">${priceChanges[crypto.symbol] ? priceChanges[crypto.symbol].toFixed(2) + '%' : '0.00%'}</div>
                     </div>
                     <div class="technical-box">
-                        <div>Technical Analysis: RSI ${getRandomTechnicals().rsi}, Trend ${getRandomTechnicals().trend}</div> <!-- Placeholder -->
+                        <div>Technical Analysis: RSI ${getRandomTechnicals().rsi}, Trend ${getRandomTechnicals().trend}</div>
                     </div>
                     <div class="signals-box">
                         <div class="signals-title">Market Signals</div>
