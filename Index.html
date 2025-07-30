@@ -146,7 +146,7 @@
             } catch (error) {
                 console.log('❌ CMC failed:', error.message);
             }
-            console.log('🔄 Using enhanced demo mode');
+            console.log('🔄 All connections failed, using enhanced demo mode');
             apiStatus = 'demo-mode';
             const priceVariations = {
                 'ETH': { min: 3400, max: 3600, volatility: 0.03 },
@@ -527,7 +527,7 @@
                         <div class="change">${priceChanges[crypto.symbol] ? priceChanges[crypto.symbol].toFixed(2) + '%' : '0.00%'}</div>
                     </div>
                     <div class="technical-box">
-                        <div>Technical Analysis: RSI ${getRandomTechnicals().rsi}, Trend ${getRandomTechnicals().trend}</div>
+                        <div>Technical Analysis: RSI ${getRandomTechnicals().rsi}, Trend ${getRandomTechnicals().trend}</div> <!-- Placeholder -->
                     </div>
                     <div class="signals-box">
                         <div class="signals-title">Market Signals</div>
